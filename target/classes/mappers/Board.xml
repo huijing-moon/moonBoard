@@ -1,0 +1,76 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Board.dao.BoardDao">
+        <insert id="create">
+        INSERT INTO boardTable( id, title, content, deleteYn, date
+    ) VALUES ( #{id},#{title},#{content},'N',NOW())
+        </insert>
+
+    <select id="selectList" resultType="com.Board.vo.BoardVo" parameterType="com.Board.vo.BoardVo">
+        select *
+        from boardTable
+        WHERE 1=1
+        AND deleteYn = 'N'
+        order by idx desc
+    </select>
+
+    <select id="selectOne" resultType="com.Board.vo.BoardVo">
+        select id, title, content
+        from boardTable
+        where  id = #{id}
+    </select>
+
+    <update id="update">
+        UPDATE boardTable
+        set
+           title= #{title}
+           ,content= #{content}
+           ,date= NOW()
+        where  id = #{id}
+    </update>
+
+    <update id="delete">
+        UPDATE boardTable
+        set
+            deleteYn ='Y'
+        ,date = NOW()
+        where  id = #{id}
+    </update>
+
+    <select id="count" resultType="int" parameterType="hashMap">
+        select count(idx)
+        from boardTable
+        <if test='searchType.equals("title")'>
+            WHERE title LIKE concat ('%',#{keyword}, '%')
+
+        </if>
+        <if test='searchType.equals("content")'>
+            WHERE content LIKE concat ('%',#{keyword},'%')
+        </if>
+        <if test='searchType.equals("id")'>
+            WHERE id LIKE concat('%', #{keyword}, '%')
+        </if>
+        AND deleteYn = 'N'
+    </select>
+
+    <!-- 게시물 목록+ 페이징  -->
+    <select id="listPage" resultType="com.Board.vo.BoardVo" parameterType="hashMap">
+        select *
+        from boardTable
+        <if test='searchType.equals("title")'>
+            WHERE title LIKE concat ('%',#{keyword}, '%')
+
+        </if>
+        <if test='searchType.equals("content")'>
+            WHERE content LIKE concat ('%',#{keyword},'%')
+        </if>
+        <if test='searchType.equals("id")'>
+            WHERE id LIKE concat('%', #{keyword}, '%')
+        </if>
+
+        AND deleteYn = 'N'
+        order by idx desc
+            limit #{displayPost}, #{postNum}
+    </select>
+</mapper>
