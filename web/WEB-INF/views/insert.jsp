@@ -19,23 +19,31 @@
 <%--        }--%>
 
 <%--    </script>--%>
+
+    <script type="text/javascript">
+        window.onload =function() {
+            var id = document.register.id;
+            var title = document.register.title;
+            var content = document.register.content;
+            document.register.onsubmit = function () {
+                if (!id.value) {
+                    alert("id를 입력해주세요.");
+                    id.focus();
+                    return false;
+                }
+                if(!title.value){
+                    alert("제목을 입력해주세요.");
+                    return false;
+                }
+                if(!content.value){
+                    alert("내용을 입력해주세요.");
+                    return false;
+                }
+            }
+        }
+    </script>
 </head>
-<script type="text/javascript">
 
-
-    var id = ${vo.id};
-    function fn_board_register(){
-        if(id != null){
-            document.register.action = "<c:url value= '/board/register' />";
-            document.register.submit();
-        }
-        else{
-            alert("id를 입력해주세요.");
-        }
-        alert("alert");
-    }
-
-</script>
 <body>
 <h1>게시글 등록</h1>
 <div>
@@ -55,7 +63,7 @@
     <td><input type="textarea" name="content" value="${vo.content}"></td>
     </tr>®
     </table>
-    <button type="submit"><a href="#" onclick="fn_board_register()" /> 완료</button>
+    <button type="submit"><a href="#" onclick="document.register.onsubmit()" /> 완료</button>
 
 
 </form>
